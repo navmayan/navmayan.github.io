@@ -1,0 +1,32 @@
+name: "my-website"
+navbar:
+  title: "My Website"
+  type: inverse
+  left:
+    - text: "Home"
+      icon: fa-home
+      href: index.html
+    - text: "About"
+      icon: fa-info
+      href: about.html
+      menu:
+        - text: "Mayan Navon"
+        - text: "CV"
+          href: cv.html
+        - text: "Research Interests"
+          href: ri.html
+        - text: "Publications"
+          href: pubs.html
+        - text: "---------"
+        - text: "Resources"
+          href: res.html
+  right:
+    - icon: fab fa-researchgate
+      href: https://www.researchgate.net/profile/Mayan_Navon
+    - icon: fab fa-twitter-square
+      href: https://twitter.com/mayan_navon
+output:
+  html_document:
+    theme: cosmo
+    highlight: textmate
+    css: styles.css
