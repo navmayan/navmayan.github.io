@@ -5,7 +5,9 @@
 
 <img src="images/me_crop.jpg" style="width:25%; border:10px solid; margin-right: 20px" align="left">
 <style type="text/css"> body, td { font-size: 16px; } pre { font-size: 12px } </style>
-
+<head>
+  <title>Mayan Navon</title>
+</head>
 I am a doctoral student in the Department of Psychology at Ben-Gurion University. I work with [Yoav Bar-Anan](https://www.tau.ac.il/~baranan/) in the Social Perception Lab.
 
 I study social cognition, mainly attitude formation, intergroup relations, and motivation.
@@ -13,7 +15,7 @@ In my dissertation research, I study Bivalent Memory: Memory processes that link
 
 My M.A. thesis explored the effects of conflict mindset on the visual mental representation of the ingroup and outgroup. 
 
-<font size="5"><a href="./research.html">Read more about my research here.</a></font><br>
+<font size="4"><a href="./research.html">Read more about my research here.</a></font><br>
 
 [My full CV is available here](files/Mayan Navon_CV.pdf)
 

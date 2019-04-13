@@ -12,21 +12,25 @@ navbar:
       menu:
         - text: "Mayan Navon"
         - text: "CV"
-          href: cv.html
+          href: files/Mayan Navon_CV.pdf
         - text: "Research Interests"
           href: ri.html
         - text: "Publications"
           href: pubs.html
         - text: "---------"
-        - text: "Resources"
+        - text: "Research tools"
           href: res.html
   right:
-    - icon: fab fa-researchgate
+    - icon: fab fa-brands:researchgate
       href: https://www.researchgate.net/profile/Mayan_Navon
     - icon: fab fa-twitter-square
       href: https://twitter.com/mayan_navon
+    - icon: fas fa-envelope
+      href: mayanna@post.bgu.ac.il
 output:
   html_document:
     theme: cosmo
     highlight: textmate
+    include:
+      after_body: footer.html
     css: styles.css
