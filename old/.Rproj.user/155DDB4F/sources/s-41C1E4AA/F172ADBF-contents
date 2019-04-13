@@ -1,0 +1,475 @@
+---
+title: 'bisources4 summary report: first data collection stop'
+author: "Mayan Navon"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    code_folding: hide
+    df_print: paged
+    theme: flatly
+    fig_height: 7
+    fig_width: 12   
+    toc: yes
+    toc_float: yes
+geometry: left=1cm, right=1cm, top=1cm, bottom=1cm
+classoption: landscape
+always_allow_html: yes
+---
+<style type="text/css"> body, td { font-size: 16px; } code.r{ font-size: 12px; } pre { font-size: 12px } </style>
+
+
+#
+
+```{r load packages, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+
+pacman::p_load(tinytex,rmdformats,magrittr,stringr,dplyr,knitr,kableExtra,IAT,tidyr,jmv)
+options(knitr.table.format = "html") #,encoding = 'UTF-8'
+source("C:\\Users\\Lenovo\\Google Drive\\School\\PhD\\Pilots\\analysis\\RScriptsForAnalysis\\yba.funcs.R")
+
+```
+
+```{r knitr_init, echo=FALSE, cache=FALSE, warning=FALSE}
+
+## Global options
+options(max.print="275")
+options(width = 1200)
+opts_chunk$set(echo=TRUE, # whether to include R source code in the output file
+	             cache=TRUE, 
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               include=TRUE, #whether to include the chunk output in the final output document
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
+<style type="text/css">
+.main-container {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+#
+```{r exclude dropping Ps, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+
+####################################################################################################################
+#Read session data 
+####################################################################################################################
+
+s0 <- readr::read_delim("sessionTasks.txt", "\t", 
+    escape_double = FALSE, trim_ws = TRUE)
+
+sl <- s0[,c("session_id", "task_id", "task_number", "user_agent", "task_creation_date", "session_last_update_date")]
+
+#Get rid of sessions from other studies (got the task_ids from a later in this script and then got back to get rid of those)
+table(sl$task_id)
+#Get rid of deuplicates
+sdup1 <- sl[duplicated(sl[,c('session_id', 'task_number')]),]
+#sdup1$session_id
+#sl <- sl[!duplicated(sl[,c('session_id', 'task_number')]),]
+
+#Create the task-order data (one row per participant)
+task.order <- data.table::dcast(sl, session_id  ~ task_number, value.var = 'task_id')
+#Change column names
+colnames(task.order)[2:ncol(task.order)] <- paste('ord', colnames(task.order)[2:ncol(task.order)], sep='')
+
+#Get rid of deuplicates
+sdup2 <- sl[duplicated(sl[,c('session_id', 'session_last_update_date', 'task_id')]),]
+sdup2$session_id
+sl <- sl[!duplicated(sl[,c('session_id', 'session_last_update_date', 'task_id')]),]
+#Refresh levels of the task_id factor
+sl$task_id <- factor(sl$task_id)
+#Get data frame of tasks' times
+times <- data.table::dcast(sl, session_id + session_last_update_date ~ task_id, value.var = 'task_creation_date')
+#Change column names
+colnames(times)[3:ncol(times)] <- paste('t.', colnames(times)[3:ncol(times)], sep='')
+
+#Merge tasks and times
+times <- merge(times, task.order, by = "session_id")
+
+#Calculate the difference between each time column and the next. 
+##(Aharaon's code. A bit too complicated for me to understand)##
+completion <- data.frame(t(apply(times, 1, function(x){
+  ret = c()
+  
+  #Get task names by order
+  tasks = x[paste("ord", 0:(ncol(task.order) - 1), sep="")]
+  #Remove missing tasks
+  tasks = tasks[!is.na(tasks)]
+  
+  #select tasks by order
+  t = strptime(unlist(x[paste("t", unlist(tasks), sep=".")]), format="%d%b%Y %T")
+  
+  #Calculate time difference
+  for (i in 1:(length(t) - 1)){
+    ret[i] = difftime(t[i + 1], t[i], units = "secs")
+  }
+  
+  #Calculate time of last page (0 if it's a debriefing page or some other task with no data)
+  ret[length(t)] = difftime(strptime(unlist(x["session_last_update_date"]), format="%d%b%Y %T"), t[length(t)], units = "secs")
+  
+  #Add NAs for missing tasks to make sure there are equal number of columns for each subject
+  if (length(t) < ncol(task.order) - 1)
+    ret[length(t):(ncol(task.order) - 1)] = NA
+  
+  #Return the computed row
+  c(x["session_id"], ret)
+})))
+#Convert time columns to numeric objects
+completion[,2:ncol(completion)] = apply(completion[,2:ncol(completion)], 2, as.numeric)
+#Rename columns to meaningful names
+colnames(completion) = c("session_id", paste("time", 0:(ncol(task.order) - 2), sep=""))
+
+#Combine the task order and completion time data drames
+sessions = merge(task.order, completion, by = "session_id")
+
+#Then calculate completion time from individual tasks
+theTimes <- sessions[,grepl( "time" , colnames( sessions ) )]
+sessions$completion_secs = rowSums(theTimes, na.rm=TRUE)
+
+#Remove data frames to free memory
+rm(completion, sl, task.order, theTimes, times, sdup1, sdup2)
+
+#Save the session data (recommended to view this file in Excel, to understand what we saved)
+#write.csv(sessions,file=paste(dir, "sessions.csv", sep="\\"))
+
+```
+
+```{r deliberate questions, message=FALSE, warning=FALSE, include=FALSE}
+
+#load 'explicit' file
+explicit <- readr::read_delim("explicit.txt", "\t", escape_double = FALSE, trim_ws = TRUE)
+
+##memory##
+  #number of behaviors
+    #positive (0-20)
+      ex_mnumpos <- explicit %>% dplyr::filter(question_name=="mnumpos")
+      ex_mnumpos <- transform(ex_mnumpos, question_response=as.numeric(question_response))
+      ex_mnumpos$question_response[ex_mnumpos$question_response == -999] <- NA 
+     #rescale
+      ex_mnumpos$resp <- mapply(function(x) x-1,ex_mnumpos$question_response)
+      
+    #negative (0-20)
+      ex_mnumneg <- explicit %>% dplyr::filter(question_name=="mnumneg")
+      ex_mnumneg <- transform(ex_mnumneg, question_response=as.numeric(question_response))
+      ex_mnumneg$question_response[ex_mnumneg$question_response == -999] <- NA 
+      ex_mnumneg$resp <- mapply(function(x) x-1,ex_mnumneg$question_response)
+     
+      ex_mnumpos$numpos <- ex_mnumpos$resp 
+      ex_mnumneg$numneg <- ex_mnumneg$resp 
+      num <- merge(ex_mnumpos, ex_mnumneg, by = "session_id")
+      num <- num %>% select(c(session_id, numpos, numneg)) 
+      
+  #how pos/neg were the behaviors
+    #positive (1 - Not at all positive, 7 - Completely positive)
+      ex_mhowpos <- explicit %>% dplyr::filter(question_name=="mhowpos")
+      ex_mhowpos <- transform(ex_mhowpos, question_response=as.numeric(question_response))
+      ex_mhowpos$question_response[ex_mhowpos$question_response == -999] <- NA 
+    #negative (1 - Not at all negative, 7 - Completely negative)
+      ex_mhowneg <- explicit %>% dplyr::filter(question_name=="mhowneg")
+      ex_mhowneg <- transform(ex_mhowneg, question_response=as.numeric(question_response))
+      ex_mhowneg$question_response[ex_mhowneg$question_response == -999] <- NA 
+
+      ex_mhowpos$howpos <- ex_mhowpos$question_response 
+      ex_mhowneg$howneg <- ex_mhowneg$question_response 
+      how <- merge(ex_mhowpos, ex_mhowneg, by = "session_id")
+      how <- how %>% select(c(session_id, howpos, howneg)) 
+      
+  #how related to was the target to pos/neg    
+  #positivity (1 - Not at all related to positivity, 7 - Very much related to positivity)
+    ex_mrelpos <- explicit %>% dplyr::filter(question_name=="mrelpos")
+    ex_mrelpos <- transform(ex_mrelpos, question_response=as.numeric(question_response))
+    ex_mrelpos$question_response[ex_mrelpos$question_response == -999] <- NA 
+  #negativity (1 - Not at all related to negativity, 7 - Very much related to negativity)
+    ex_mrelneg <- explicit %>% dplyr::filter(question_name=="mrelneg")    
+    ex_mrelneg <- transform(ex_mrelneg, question_response=as.numeric(question_response))
+    ex_mrelneg$question_response[ex_mrelneg$question_response == -999] <- NA     
+
+    ex_mrelpos$relpos <- ex_mrelpos$question_response 
+    ex_mrelneg$relneg <- ex_mrelneg$question_response 
+    rel <- merge(ex_mrelpos, ex_mrelneg, by = "session_id")
+    rel <- rel %>% select(c(session_id, relpos, relneg))     
+    
+  # bind DFs
+  questionScores <- merge(num, how, by = "session_id")
+  questionScores <- merge(questionScores, rel, by = "session_id")
+
+##objective ambivalence##
+#keep only oamb responses
+  #positivity
+ex_oamb.p <- explicit %>% dplyr::filter(question_name=="oamb.p")
+ex_oamb.p <- transform(ex_oamb.p, question_response=as.numeric(question_response))
+ex_oamb.p$question_response[ex_oamb.p$question_response == -999] <- NA 
+ex_oamb.p <- transform(ex_oamb.p, question_response=as.numeric(question_response))
+#rescale (0-7)
+ex_oamb.p$question_response_r <- ex_oamb.p$question_response - 1
+  #negativity
+ex_oamb.n <- explicit %>% dplyr::filter(question_name=="oamb.n")
+ex_oamb.n <- transform(ex_oamb.n, question_response=as.numeric(question_response))
+ex_oamb.n$question_response[ex_oamb.n$question_response == -999] <- NA 
+ex_oamb.n <- transform(ex_oamb.n, question_response=as.numeric(question_response))
+#rescale (0-7)
+ex_oamb.n$question_response_r <- ex_oamb.n$question_response - 1
+
+#add to 'questionScores' table
+questionScores$oPos <- ex_oamb.p$question_response_r[match(questionScores$session_id, ex_mnumpos$session_id)] 
+questionScores$oNeg <- ex_oamb.n$question_response_r[match(questionScores$session_id, ex_mnumpos$session_id)] 
+
+#quantify ambivalence by subject
+  #Thompson et al.'s (1995) formula to quantify ambivalence
+  questionScores$obj.amb.kapl <- (questionScores$oPos+questionScores$oNeg)-abs(questionScores$oPos-questionScores$oNeg)
+  #questionScores$obj.amb.tomp <- ((questionScores$oPos+questionScores$oNeg)/2)-abs(questionScores$oPos-questionScores$oNeg)
+  questionScores$obj.amb.tomp <- 5-abs(questionScores$oPos-questionScores$oNeg)+((questionScores$oPos+questionScores$oNeg)/2)
+  questionScores$obj.amb.altered <- (questionScores$oPos+questionScores$oNeg)-(abs(questionScores$oPos-questionScores$oNeg)*1.5)
+
+  
+  ##subjective ambivalence##
+  #keep only samb responses
+    ex_samb123 <- explicit %>% dplyr::filter(question_name=="samb1" | question_name=="samb2" | question_name=="samb3" )
+  #transform responses to numeric
+    ex_samb123 <- transform(ex_samb123, question_response=as.numeric(question_response))
+    ex_samb123$question_response[ex_samb123$question_response == -999] <- NA 
+  #aggregate mean samb by session_id
+    ex_samb123_mean <- aggregate(x=ex_samb123$question_response,by=list(ex_samb123$session_id),FUN=mean, na.action = na.omit)
+  #add to 'questionScores' table
+    questionScores$subj.amb <- ex_samb123_mean$x[match(questionScores$session_id, ex_samb123_mean$Group.1)]
+
+#add judgment ambivalence (based on memory questions)
+  questionScores$how.amb.kapl <- (questionScores$howpos+questionScores$howneg)-abs(questionScores$howpos-questionScores$howneg)
+  questionScores$how.amb.tomp <- 5-abs(questionScores$howpos-questionScores$howneg)+((questionScores$howpos+questionScores$howneg)/2)
+  questionScores$how.amb.altered <-(questionScores$howpos+questionScores$howneg)-(abs(questionScores$howpos-questionScores$howneg))*1.5
+  questionScores$num.amb.kapl <- (questionScores$numpos+questionScores$numneg)-abs(questionScores$numpos-questionScores$numneg) 
+  questionScores$num.amb.tomp <- 5-abs(questionScores$numpos-questionScores$numneg)+((questionScores$numpos+questionScores$numneg)/2)
+  questionScores$num.amb.altered <- (questionScores$numpos+questionScores$numneg)-(abs(questionScores$numpos-questionScores$numneg))*1.5 
+  questionScores$rel.amb.kapl <- (questionScores$relpos+questionScores$relneg)-abs(questionScores$relpos-questionScores$relneg) 
+  questionScores$rel.amb.tomp <- 5-abs(questionScores$relpos-questionScores$relneg)+((questionScores$relpos+questionScores$relneg)/2)
+  questionScores$rel.amb.altered <- (questionScores$relpos+questionScores$relneg)-(abs(questionScores$relpos-questionScores$relneg))*1.5 
+
+  
+questionScores$comp <- sessions$ord14[match(questionScores$session_id, sessions$session_id)]
+   
+cond <- explicit %>% dplyr::filter(question_name=="cond")
+questionScores$cond <- cond$question_response[match(questionScores$session_id, cond$session_id)]
+
+## remove all Ps that did not complete the study
+questionScores <- questionScores %>% dplyr::filter(comp=="lastpage") #ord13
+
+
+##save to file
+write.csv(questionScores,file = "bisources4.csv",na = "")
+
+```
+
+```{r memo}
+
+##item recognition##
+  # keep just the item recognition items
+    ex_itemRecog <- explicit %>% dplyr::filter(questionnaire_name=="memquiz")
+    ex_itemRecog <- transform(ex_itemRecog, question_response=as.numeric(question_response))
+    ex_itemRecog$question_response[ex_itemRecog$question_response == -999] <- NA 
+    ex_itemRecog <- ex_itemRecog %>% dplyr::filter(question_response < 3)
+    table(ex_itemRecog$question_response, exclude=NULL)
+    itemRecog <- ex_itemRecog[,c("session_id","question_name", "question_response")]
+    
+    #code correct
+    itemRecog$correctresp <- NA
+    itemRecog$correctresp[which(grepl('old', itemRecog$question_name))] <- 'old'
+    itemRecog$correctresp[which(grepl('novel', itemRecog$question_name))] <- 'novel'
+    table(itemRecog$correctresp, exclude=NULL)
+    #code Ss responses
+    itemRecog$resp <- NA
+    itemRecog$resp <- ifelse(itemRecog$question_response==1,"old",
+                      ifelse(itemRecog$question_response==2,"novel",       
+                             NA))
+    table(itemRecog$resp, exclude=NULL)
+    #code acc
+    itemRecog$acc <- NA
+    itemRecog$acc <- ifelse(itemRecog$resp==itemRecog$correctresp,1,
+                      ifelse(itemRecog$resp!=itemRecog$correctresp,0,       
+                             NA))
+    table(itemRecog$acc, exclude=NULL)    
+    
+    #verify completion
+    itemRecog$comp <- sessions$ord14[match(itemRecog$session_id, sessions$session_id)]
+    itemRecog <- itemRecog %>% dplyr::filter(comp=="lastpage")
+    nrowsir <- count(itemRecog, "session_id")
+    itemRecog$nrows <- nrowsir$freq[match(itemRecog$session_id, nrowsir$session_id)]
+    itemRecog$complete <- ifelse(itemRecog$nrows==32,"completed",NA)
+    itemRecog_f <- itemRecog %>% dplyr::filter(complete=="completed")
+    table(itemRecog_f$correctresp, exclude=NULL)
+    
+    #calc raw proportions for d'
+    itemRecog_f$wrong <- 1-itemRecog_f$acc
+    oldtrials <- itemRecog_f %>% dplyr::filter(correctresp=="old") 
+    noveltrials <- itemRecog_f %>% dplyr::filter(correctresp=="novel") 
+    hit <- aggregate(x=list("n_hit"=oldtrials$acc), by=list("session_id"=oldtrials$session_id), FUN=sum, na.rm=TRUE)
+    hit$n_miss <- 16-hit$n_hit
+    fa <- aggregate(x=list("n_fa"=noveltrials$wrong), by=list("session_id"=noveltrials$session_id), FUN=sum, na.rm=TRUE)
+    fa$n_cr <- 16-fa$n_fa
+    
+    #code condition
+    rawscores <- merge(hit, fa, by=c("session_id"))
+    rawscores$cond <- cond$question_response[match(rawscores$session_id, cond$session_id)]
+
+    #calc indices per condition
+    rawscores <- rawscores %>% tidyr::drop_na()
+    sepbiv <- rawscores %>% dplyr::filter(cond=="sepbiv1"|cond=="sepbiv2")
+    mixbiv <- rawscores %>% dplyr::filter(cond=="mixbiv1"|cond=="mixbiv2")
+    
+      #sep       
+    indices_sep <- neuropsychology::dprime(sepbiv$n_hit, sepbiv$n_miss, sepbiv$n_fa, sepbiv$n_cr)
+    indices_sep <- as.data.frame(indices_sep)
+    colnames(indices_sep) <- paste("sep", colnames(indices_sep), sep = "_")
+    indices_sep$num <- ave(indices_sep$sep_dprime, FUN = seq_along)
+      #mix
+    indices_mix <- neuropsychology::dprime(mixbiv$n_hit, mixbiv$n_miss, mixbiv$n_fa, mixbiv$n_cr)
+    indices_mix <- as.data.frame(indices_mix)
+    colnames(indices_mix) <- paste("mix", colnames(indices_mix), sep = "_")
+    indices_mix$num <- ave(indices_mix$mix_dprime, FUN = seq_along)
+
+    #merge
+    all_indices <- Reduce(function(x, y) merge(x, y, all=TRUE), list(indices_sep, indices_mix))
+    
+    write.csv(all_indices,file = "allindices.csv",na = "")
+
+    #turn long
+    all_indices <- all_indices[,c("num","sep_dprime", "mix_dprime")]
+    all_indices_long <- all_indices%>% tidyr::gather(condition, dprime, sep_dprime:mix_dprime)
+    all_indices_long$condition <- substr(all_indices_long$condition, 1, nchar(all_indices_long$condition)-7)
+    all_indices_long <- all_indices_long %>% tidyr::drop_na()
+
+  write.csv(all_indices_long,file = "allindices_long.csv",na = "")
+
+```
+
+
+```{r import Implicit, message=FALSE, warning=FALSE, include=FALSE}
+#Read reaction time tasks
+iat <- readr::read_delim("iat.txt", "\t", 
+    escape_double = FALSE, trim_ws = TRUE)
+nrow(iat) #Always test all rows were read fine (open the txt file in notepad++ to count the lines)
+
+#Convert trial_error to numeric, and make sure trial_latency is numeric
+iat$trial_error <- as.numeric(as.character(iat$trial_error))
+class(iat$trial_error)
+class(iat$trial_latency)
+
+#task_name helps differentiate between the different reaction time tasks.
+unique(iat$task_name)
+
+```
+
+## Data analysis
+We focused on self-report measures. The indirect measures were exploratory because we are still searching for a reasonable indirect measure of bivalent mental associations.
+
+```{r load materials, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+
+bisources4 <- read.csv("bisources4.csv", header = TRUE)
+memodatalong <- read.csv("allindices_long.csv", header = TRUE)
+memodatawide <- read.csv("allindices.csv", header = TRUE)
+
+
+```
+
+### Descriptives 
+```{r descriptives, echo=FALSE, message=FALSE, warning=FALSE}
+#library(summarytools)
+#view(dfSummary(bisources4))
+
+# objective ambivalence
+oamb.table <- as.data.frame(mysumBy(dt=bisources4, oPos+oNeg+obj.amb.tomp ~ cond)) 
+oamb.table <- oamb.table %>% tidyr::drop_na()
+kable_styling(knitr::kable(oamb.table)) %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F, position = "left") %>% add_header_above(c(" ", "Objective Ambivalence" = 7))
+# subjective & judgmental ambivalence
+sjamb.table <- as.data.frame(mysumBy(dt=bisources4, subj.amb+num.amb.tomp+how.amb.tomp+rel.amb.tomp  ~ cond)) 
+sjamb.table <- sjamb.table %>% tidyr::drop_na()
+kable_styling(knitr::kable(sjamb.table)) %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F, position = "left") %>% add_header_above(c(" ", "Subjective Ambivalence & Judgmental Bivalence" = 7))
+# item memory
+im.table <- as.data.frame(mysumBy(dt=memodatalong, dprime ~ condition))
+kable_styling(knitr::kable(im.table)) %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F, position = "left") %>% add_header_above(c(" ", "Item Memory" = 6))
+
+
+```
+
+### Main tests  
+We examined whether participants report more ambivalence (objective and subjective) and more bivalent memory ("judgmental ambivalence": ratings the valence-extremety attributed to the target, and memory reports of the number of positive and negative behaviors conducted by the target) in the separate than in the mixed condition.
+
+```{r main tests, echo=TRUE, message=FALSE, warning=FALSE, Tidy=TRUE, results="asis"}
+
+bisources4$condition <- NA
+bisources4$condition[which(grepl('mix', bisources4$cond))] <- 'mix'
+bisources4$condition[which(grepl('sep', bisources4$cond))] <- 'sep'
+    #table(bisources4$condition, exclude=NULL)
+
+#objective
+ggstatsplot::ggbetweenstats(
+  data = bisources4, 
+  x = condition, 
+  y = obj.amb.tomp,
+  messages = FALSE
+) +                                               # further modification outside of ggstatsplot
+  ggplot2::coord_cartesian(ylim = c(1, 9)) #+ 
+  #ggplot2::scale_y_continuous(breaks = seq(3, 8, by = 1))
+
+#subjective
+ggstatsplot::ggbetweenstats(
+  data = bisources4, 
+  x = condition, 
+  y = subj.amb,
+  messages = FALSE,
+  bf.message = TRUE
+) +                                               # further modification outside of ggstatsplot
+  ggplot2::coord_cartesian(ylim = c(1, 9))
+
+#num
+ggstatsplot::ggbetweenstats(
+  data = bisources4, 
+  x = condition, 
+  y = num.amb.tomp,
+  messages = FALSE,
+  bf.message = TRUE
+) +                                               # further modification outside of ggstatsplot
+  ggplot2::coord_cartesian(ylim = c(0,20))
+
+#how
+ggstatsplot::ggbetweenstats(
+  data = bisources4, 
+  x = condition, 
+  y = how.amb.tomp,
+  messages = FALSE,
+  bf.message = TRUE
+) +                                               # further modification outside of ggstatsplot
+  ggplot2::coord_cartesian(ylim = c(1,12))
+
+#rel
+ggstatsplot::ggbetweenstats(
+  data = bisources4, 
+  x = condition, 
+  y = rel.amb.tomp,
+  messages = FALSE,
+  bf.message = TRUE
+) +                                               # further modification outside of ggstatsplot
+  ggplot2::coord_cartesian(ylim = c(1,12))
+
+#memory
+ggstatsplot::ggbetweenstats(
+  data = memodatalong, 
+  x = condition, 
+  y = dprime,
+  messages = FALSE,
+  bf.message = TRUE
+) +                                               # further modification outside of ggstatsplot
+  ggplot2::coord_cartesian(ylim = c(0,4))
+
+
+
+
+
+```
+
+##### To sum,  
+The effects found in bisources1-2 are flipped in the current study. This is probably because the warmth and conpetence traits were not perceived as orthogonal in this sample.
+    

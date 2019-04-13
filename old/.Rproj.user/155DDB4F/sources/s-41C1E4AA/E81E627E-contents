@@ -1,6 +1,6 @@
-name: "my-website"
+name: "Mayan Navon | Ben-Gurion University"
 navbar:
-  title: "My Website"
+  title: "Mayan Navon"
   type: inverse
   left:
     - text: "Home"
