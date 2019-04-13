@@ -5,9 +5,7 @@
 
 <img src="images/me_crop.jpg" style="width:25%; border:10px solid; margin-right: 20px" align="left">
 <style type="text/css"> body, td { font-size: 16px; } pre { font-size: 12px } </style>
-<head>
-  <title>Mayan Navon</title>
-</head>
+
 I am a doctoral student in the Department of Psychology at Ben-Gurion University. I work with [Yoav Bar-Anan](https://www.tau.ac.il/~baranan/) in the Social Perception Lab.
 
 I study social cognition, mainly attitude formation, intergroup relations, and motivation.
