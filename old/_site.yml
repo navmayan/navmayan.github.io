@@ -26,7 +26,7 @@ navbar:
     - icon: fab fa-twitter-square
       href: https://twitter.com/mayan_navon
     - icon: fas fa-envelope
-      href: mayanna@post.bgu.ac.il
+      href: mailto:mayanna@post.bgu.ac.il
 output:
   html_document:
     theme: cosmo
