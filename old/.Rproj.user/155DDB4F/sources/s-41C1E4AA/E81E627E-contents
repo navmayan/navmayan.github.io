@@ -21,7 +21,7 @@ navbar:
         - text: "Research tools"
           href: res.html
   right:
-    - icon: fab fa-brands:researchgate
+    - icon: ai ai-researchgate
       href: https://www.researchgate.net/profile/Mayan_Navon
     - icon: fab fa-twitter-square
       href: https://twitter.com/mayan_navon
