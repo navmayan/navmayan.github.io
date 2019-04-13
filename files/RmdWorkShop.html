@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>R Markdown Workshop</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Mayan Navon &amp; Michael Pinus" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <script src="libs/kePrint-0.0.1/kePrint.js"></script>
+    <link rel="stylesheet" href="styling.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# R Markdown Workshop
+## Creat Reports with R Markdown
+### Mayan Navon &amp; Michael Pinus
+### 18/07/2018
+
+---
+
+
+## R Markdown
+
+- What is R Markdown
+- Possible outputs
+  - PDF
+  - Docx
+  - HTML pages
+  - Complete websites
+  - Slideshows (HTML, or PP with RStudio&gt;1.2)
+  - Many more..
+
+---
+
+## Required/Reviewed Software
+ 
+- MiKTeX (complete version - takes a long time to install)
+- RStudio + R
+- Output Viewer (Powerpoint, Word, Browser...)
+- R packages
+  - CRAN: rmarkdown, knitr, kableExtra, ggpubr, GGally, rmdformats, rticles,citr (optional), pacman and installr (very optional, but useful)
+  - Github: crsh/papaja, pinusm/Mmisc (optional)
+- Zotero (optional)
+
+---
+
+## Installing
+- Copy&amp;Paste to R: 
+    - Might take a while...
+
+
+```r
+install.packages("pacman")
+```
+
+
+```r
+pacman::p_load(tidyverse,rmarkdown,knitr,citr,installr,
+               kableExtra,ggpubr,GGally,rmdformats,
+               rticles)
+pacman::p_load_gh("crsh/papaja","pinusm/Mmisc")
+```
+
+
+```r
+installr::install.MikTeX()
+```
+
+---
+
+## Basic Workflow
+
+- Create new R Markdown file
+  - Edit header (and other meta-data)
+  - Analysis &amp; Write Body
+  - Knit
+  - Revise (IN R MARKDOWN, not output)
+- Final adjustment on output (e.g. fix table font size with Word Macro)
+
+
+---
+## Meta-Data (YAML)
+- Basic formats
+
+```r
+---
+ title: "My document"
+output: 
+  html_document
+  pdf_document 
+--- 
+```
+
+- *rmdformats* HTML document
+
+```r
+---
+title: "atgn4 - summary report"
+author: "Mayan Navon"
+date: 'June 20th, 2018'   # '`r format(Sys.Date(), "%d/%m/%Y")`'
+output:
+  rmdformats::readthedown: 
+    highlight: kate  
+    fig_height: 4
+    fig_width: 5                                  
+  html_document:
+    df_print: paged
+theme: cerulean
+--- 
+```
+
+
+---
+
+## Analysis &amp; Write Body 
+
+- Write body
+  - Write in plain text 
+  - Use markdown syntax to format 
+- Insert chunks (per analysis/ data preparation/ other data handling)
+  - insert: R
+- Edit chunk parameters
+  - **Code evaluation:** eval, include 
+  - **Results:** echo, message, warning
+  - Many more... see reference guide
+
+---
+
+## Tables
+
+knitr::kable() and kableExtra::kable_styling()
+
+
+
+```r 
+'''{r demo table, echo = T, warning=FALSE,message=F}
+pacman::p_load(afex) # for demo data and analysis
+data(sk2011.1)
+dt &lt;- aov_ez("id", "response", sk2011.1, between = "instruction", 
+       within = "plausibility",
+       anova_table =  list(correction = "none", es = "pes")
+)
+'''
+```
+
+''' should be BACKTICKS!! 
+
+---
+
+## knitr::kable()
+
+
+```r
+kable(afex::nice(dt)) 
+```
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Effect &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; df &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; MSE &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; F &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; pes &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; p.value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; instruction &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1, 38 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 506.86 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.31 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .58 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; plausibility &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1, 38 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 117.21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 34.23 *** &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .47 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &amp;lt;.0001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; instruction:plausibility &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1, 38 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 117.21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 10.67 ** &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .22 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .002 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+---
+
+## kableExtra::kable_styling()
+
+
+```r
+kable(afex::nice(dt)) %&gt;%
+  kable_styling(
+    bootstrap_options = c("striped", "hover",
+                          "condensed", "responsive"), 
+    #bootstrap_options ignored in Slides output, but are useful
+                full_width = F)
+```
+
+&lt;table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Effect &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; df &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; MSE &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; F &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; pes &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; p.value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; instruction &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1, 38 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 506.86 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.31 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .58 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; plausibility &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1, 38 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 117.21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 34.23 *** &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .47 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &amp;lt;.0001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; instruction:plausibility &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1, 38 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 117.21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 10.67 ** &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .22 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .002 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+---
+
+## kableExtra::add_header_above()
+
+
+```r
+kable(afex::nice(dt)) %&gt;%
+  kable_styling(
+    bootstrap_options = c("striped", "hover",
+                          "condensed", "responsive"),
+                full_width = F) %&gt;%
+  add_header_above(c("Header Spanning 3 cols" = 3, " " = 3)) %&gt;%
+  add_header_above(c("Header Spanning 6 cols" = 6)) 
+```
+
+&lt;table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+&lt;tr&gt;&lt;th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="6"&gt;&lt;div style="border-bottom: 1px solid #ddd; padding-bottom: 5px;"&gt;Header Spanning 6 cols&lt;/div&gt;&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3"&gt;&lt;div style="border-bottom: 1px solid #ddd; padding-bottom: 5px;"&gt;Header Spanning 3 cols&lt;/div&gt;&lt;/th&gt;
+&lt;th style="border-bottom:hidden" colspan="3"&gt;&lt;/th&gt;
+&lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Effect &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; df &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; MSE &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; F &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; pes &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; p.value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; instruction &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1, 38 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 506.86 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.31 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .58 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; plausibility &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1, 38 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 117.21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 34.23 *** &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .47 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &amp;lt;.0001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; instruction:plausibility &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1, 38 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 117.21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 10.67 ** &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .22 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .002 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+---
+
+## kableExtra::footnote()
+
+
+```r
+kable(afex::nice(dt)) %&gt;%
+  kable_styling(
+    bootstrap_options = c("striped", "hover",
+                          "condensed", "responsive"),
+                full_width = F) %&gt;%
+  footnote(general = " Footnote A",
+           footnote_as_chunk = T)
+```
+
+&lt;table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Effect &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; df &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; MSE &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; F &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; pes &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; p.value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; instruction &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1, 38 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 506.86 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.31 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .58 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; plausibility &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1, 38 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 117.21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 34.23 *** &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .47 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &amp;lt;.0001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; instruction:plausibility &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1, 38 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 117.21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 10.67 ** &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .22 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; .002 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; border: 0;" colspan="100%"&gt;
+&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt; &lt;sup&gt;&lt;/sup&gt;  Footnote A&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+&lt;/table&gt;
+
+---
+
+## Figures
+
+- ggpubr::
+- GGally::
+
+
+```r
+data(flea)
+df &lt;- flea
+df %&gt;%
+  head(5)
+```
+
+```
+##    species tars1 tars2 head aede1 aede2 aede3
+## 1 Concinna   191   131   53   150    15   104
+## 2 Concinna   185   134   50   147    13   105
+## 3 Concinna   200   137   52   144    14   102
+## 4 Concinna   173   127   50   144    16    97
+## 5 Concinna   171   118   49   153    13   106
+```
+
+```r
+df %&gt;%
+    select(species) %&gt;%
+    table()
+```
+
+```
+## .
+##  Concinna  Heikert. Heptapot. 
+##        21        31        22
+```
+
+
+---
+
+## Some fixes before plotting
+
+
+```r
+df &lt;-
+    flea %&gt;%
+    rename(`Head Diameter` = head,
+           `1st Torso Diameter` = tars1,
+           `2nd Torso Diameter` = tars2,
+           Species = species) %&gt;%
+    mutate(Species = fct_recode(Species,
+               "Heikert" = "Heikert.",
+               "Heptapot" = "Heptapot.")
+    )
+```
+
+
+
+---
+## ggpubr::violin()
+
+```r
+my_comparisons &lt;- list( c("Heptapot", "Heikert"),
+                        c("Heikert", "Concinna"),
+                        c("Heptapot", "Concinna"))
+```
+
+.pull-left[
+![caption](RmdWorkShop_files/figure-html/ggpubr violin-1.png)
+]
+
+.pull-right[
+
+```r
+ggviolin(df, 
+         x = "Species",
+         y = "`Head Diameter`",
+         fill = "Species",
+         palette = "grey",
+         add = "boxplot", 
+         dd.params = list(
+           fill = "white")
+         ) + 
+  # Add significance levels
+  stat_compare_means(
+    comparisons = my_comparisons,
+    label = "p.signif"
+    ) + 
+  # Add the global p-value 
+  stat_compare_means(
+    label.y = 40
+    ) 
+```
+]
+---
+
+## ggpubr::ggerrorplot()
+
+```r
+ggerrorplot(df, x = "Species", y = "`Head Diameter`", 
+            color = "Species", desc_stat = "mean_ci",
+            palette= "grey",position = position_dodge(0.3), 
+            size = 0.9)
+```
+
+![caption](RmdWorkShop_files/figure-html/ggpubr error ci echo-1.png)
+---
+
+## GGally::ggpairs()
+
+```r
+ggpairs(df, columns = 2:4,
+        lower = list(continuous = Mmisc::plot_trend_lines)) + 
+  papaja::theme_apa()
+```
+
+![Correlogram and Correlation Matrix.](RmdWorkShop_files/figure-html/ggpairs-1.png)
+
+---
+
+## knitr::include_graphics()
+When plots are not generated from R code, we generate the images manually and pass their file paths to `include_graphics()` to include them in the output. 
+
+
+```r
+knitr::include_graphics("figures/poweranalysis.png")
+```
+
+&lt;img src="figures/poweranalysis.png" width="522" /&gt;
+
+---
+
+## Latex
+
+We can use `\(\LaTeX\)` tricks!
+
+
+Possible examples include:
+```r
+This sentence contains normal and $\textit{italic text}$.
+```
+This sentence contains normal and `\(\textit{italic text}\)`.
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+and also a bit more complex stuff:
+```r
+$$\begin{align} y|x &amp;\sim Poisson(\lambda(x)) \end{align}$$
+```
+`$$\begin{align} y|x &amp;\sim Poisson(\lambda(x)) \end{align}$$`
+
+---
+
+## Inline Text
+
+
+```r
+dt_print &lt;- apa_print(dt , es = "pes")
+```
+
+We might want to reference some data in our text.
+We _could_ type it.. (Note the use of `\(\LaTeX\)`)
+
+```r
+The effect of Instruction on response was not significant
+ *F*(1, 38) = 0.31, $\mathit{MSE}$ = 506.86, *p* = .583,
+ $\hat{\eta}^2_p = .008
+```
+
+prints out as:
+
+The effect of Instruction on response was not significant `\(F(1, 38) = 0.31\)`, `\(\mathit{MSE} = 506.86\)`, `\(p = .583\)`, `\(\hat{\eta}^2_p = .008\)`
+
+---
+
+## Inline Text - Cont.
+
+We can also automagically insert it:
+```r
+The effect of Instruction on response was not significant `r
+dt_print$full_result$instruction`
+``` 
+
+prints out as:
+
+The effect of Instruction on response was not significant `\(F(1, 38) = 0.31\)`, `\(\mathit{MSE} = 506.86\)`, `\(p = .583\)`, `\(\hat{\eta}^2_p = .008\)`
+
+
+---
+
+## Some output formats
+
+.pull-left[
+#### rmdformats::htmlclean
+&lt;img src="figures/rmdformats_htmlclean.jpg" width="1707" /&gt;
+
+#### rmdformats::readthedown
+&lt;img src="figures/rmdformats_readthedown.jpg" width="1707" /&gt;
+]
+
+.pull-right[
+#### rticles::plos
+&lt;img src="figures/plos.png" width="1555" /&gt;
+
+#### rticles::PNAS
+&lt;img src="figures/PNAS.png" width="1495" /&gt;
+]
+
+---
+
+## Knit
+
+- Click the *Knit* button at the top of the RStudio scripts pane, OR:
+
+```r
+  rmarkdown::render("&lt;file path&gt;") 
+```
+
+
+---
+
+## papaja Tables
+### papaja::apa_print() and papaja::apa_table()
+
+
+```r
+dt_print &lt;-
+    apa_print(dt , es = "pes")
+
+apa_table(dt_print$table)
+```
+
+A bit of cheating:  
+
+- This is a screenshoted Docx document
+- We ran a Macro to fix font size and line spacing (we'll cover that later)
+
+&lt;img src="figures/papaja_cheat.png" width="1837" /&gt;
+
+
+---
+
+## papaja::apa_table() with caption and note
+
+
+```r
+apa_table(dt_print$table , 
+          note = "this is a note",
+          caption = "this is a caption")
+```
+
+Same cheats as before...
+
+&lt;img src="figures/papaja_cheat_footnote.png" width="1843" /&gt;
+
+---
+
+## Figure Captions and Cross-References
+&lt;img src="figures/papaja_cheat_plots.png" width="474" /&gt;
+
+```r
+In papaja we can also create cross-references, 
+such as this. See Figure \@ref(fig:includegraphics).
+```
+
+---
+
+## Citations
+
+We can cite bibliography records from `Zotero` using the `citr` addin in rstudio.
+&lt;img src="figures/citr.png" width="468" /&gt;
+
+---
+
+## Papaja Workflow
+
+Useful when the analysis takes more than a few seconds to run.
+
+- Analysis as usual (R)
+  - Get numbers (*M*s/*SD*s/etc), tables and figures to (at least almost) console-priniting shape
+  - Save R environment to a file (e.g., "analysis.Rdata")
+- Create new R Markdown file
+  - Edit header
+  - Load R environment from file (e.g., "analysis.Rdata")
+  - Write Body (+ cite previous works)
+  - Knit
+  - Revise (IN R MARKDOWN, not output)
+- Final adjustment on output (e.g. fix table font size with Word Macro)
+
+---
+
+## Fix tables with Word Macro
+```VBA
+Sub fixPapajaTables()
+'
+' fixPapajaTables Macro
+'
+'
+    Dim tbl As Table
+    For Each tbl In ActiveDocument.Tables
+         tbl.Range.Font.Size = 10
+         tbl.Range.ParagraphFormat.LineSpacing = 10
+
+    Next
+    
+End Sub
+```
+
+
+## Non-R Workflow
+
+- Analysis as usual
+  - Get numbers (*M*s/*SD*s/etc)
+  - Save tables and figures as PNG/JPG graphic files
+- Create new R Markdown file
+  - ...
+  - Write Body (insert numbers and graphics)
+  - ...
+- Final adjustment on output (probably not needed as the graphics were embedded as-is)
+
+Remember non-R elements can be combined in an R workflow
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
