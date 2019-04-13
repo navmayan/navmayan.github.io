@@ -5,17 +5,17 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "3226668853",
+    "hash" : "0",
     "id" : "E81E627E",
-    "lastKnownWriteTime" : 1555154921,
-    "last_content_update" : 1555154921707,
+    "lastKnownWriteTime" : 1555156863,
+    "last_content_update" : 1555156863794,
     "path" : "C:/Users/Lenovo/Google Drive/School/navmayan.github.io/old/_site.yml",
     "project_path" : "_site.yml",
     "properties" : {
-        "cursorPosition" : "28,19",
+        "cursorPosition" : "22,33",
         "scrollLine" : "0"
     },
-    "relative_order" : 2,
+    "relative_order" : 1,
     "source_on_save" : false,
     "source_window" : "",
     "type" : "yaml"
