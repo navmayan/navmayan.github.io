@@ -17,7 +17,7 @@ See [this quick tutorial, created together with Michael Pinus](files/RmdWorkShop
 
 #### How I created this website
 
-[Emily C. Zabor'z greate tutorial](https://www.emilyzabor.com/tutorials/rmarkdown_websites_tutorial.html)
+[Emily C. Zabor's greate tutorial](https://www.emilyzabor.com/tutorials/rmarkdown_websites_tutorial.html)
 
 #### RMD tips
 
