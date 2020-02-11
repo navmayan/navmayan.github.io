@@ -19,7 +19,6 @@
 
 
 
-
 <title>Mayan Navon | Ben-Gurion University</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
@@ -95,7 +94,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -244,6 +242,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -255,18 +254,6 @@ $(document).ready(function () {
   display: none;
 }
 </style>
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
 
 <!-- code folding -->
 
@@ -367,12 +354,13 @@ $(document).ready(function () {
 Mayan Navon | Ben-Gurion University
 </title>
 <p><link rel="stylesheet" href="styles.css" type="text/css"> <link rel="stylesheet" href="site_libs/academicons-1.8.6/css/academicons.css"/></p>
-<p><img src="images/me_crop.jpg" style="width:25%; border:8px solid; margin-right: 20px" align="left"></p>
-<style type="text/css"> body, td { font-size: 16px; } pre { font-size: 14px } </style>
-<p>I am a doctoral student in Social Psychology at Ben-Gurion University and Tel-Aviv University. I work with <a href="https://www.tau.ac.il/~baranan/">Yoav Bar-Anan</a> in the Social Perception Lab. I received my B.A. in Psychology, Sociology, and Criminology from Bar-Ilan University, and my M.A. in Social Psychology from the Open University of Israel.</p>
-<p>I study social cognition, mainly intergroup bias and intergroup relations, attitude formation, attitudinal ambivalence, and motivation. My Master’s thesis explored the effects of conflict mindset on the visual mental representation of the ingroup and outgroup. Currently, I investigate the effect of individuating information and group based information (e.g., stereotypes) on the automatic and deliberate evaluation of individual group members. I also study Bivalent Memory: Memory processes that link the same object to two opposite values. In particular, I investigate the factors that moderate information integration.</p>
-<!--<font size="4"><a href="./research.html">Read more about my research here.</a></font><br>-->
-<p><a href="files/Mayan%20Navon_CV.pdf">My full CV is available here</a></p>
+<p><img src="images/me_crop.jpg" style="width:20%; border:6px solid; margin-right: 20px" align="left"></p>
+<style type="text/css"> body, td { font-size: 17px; } pre { font-size: 15px } </style>
+<p>I am a doctoral student in Social Psychology at Ben-Gurion University and Tel-Aviv University. I work with Yoav Bar-Anan in the <a href="https://www.tau.ac.il/~baranan/">Social Perception Lab</a>. I received my B.A. in Psychology, Sociology, and Criminology from Bar-Ilan University, and my M.A. in Social Psychology from the Open University of Israel. My Master’s thesis explored the effects of conflict mindset on the visual mental representation of the ingroup and outgroup. <br><br><br> <!--<font size="4"><a href="./research.html">Read more about my research here.</a></font><br>--></p>
+<h3>
+My research
+</h3>
+<p><br><br> <img src="images/exemplars.png" style="width:20%; margin-right: 20px" align="left"> <br><br> I study social cognition, mainly intergroup bias and intergroup relations, attitude formation, and attitudinal ambivalence. I also study facial expression synchronization. <br><br> <b>The effect of group membership and individuating information on automatic and deliberate judgment of individual group members.</b> The center of my work focuses on the relative effect of individuating information (e.g., person-specific actions and traits) and group based information (e.g., stereotypes, prejudice) on the automatic and deliberate evaluation of individual members of social groups. <br><br> <b>Tracking the dynamics of deliberate judgment: Do deliberate judgments start with automatic (spontaneous) judgments?</b> In this project, I examine whether deliberate evaluations involve automatic evaluative responses as well. <br><br> <b>Bivalentmemory and its moderators.</b>In this project I examine memory processes that link the same object to two opposite values. In particular, I investigate the factors that moderate information integration, and keep the two opposite values seperate in memory. <br><br> <b>Synchronization across various facial expressions as a function of the interaction context.</b> Here I examine whether facial expressions synchronization and mimicry vary as a function of the interpersonal interaction context, and the facial expression in question (e.g., happiness, anger).</p>
 
 
 
@@ -391,6 +379,23 @@ $(document).ready(function () {
 
 
 </script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
