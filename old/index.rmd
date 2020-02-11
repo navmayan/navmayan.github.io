@@ -20,7 +20,8 @@ I received my B.A. in Psychology, Sociology, and Criminology from Bar-Ilan Unive
 <p>
 <img src="images/exemplars.png" style="width:70%; margin-right: 20px" align="left">
 </p>
-<br><br>
+<p></p>
+<br><br><br><br><br>
 I study social cognition, mainly intergroup bias and intergroup relations, attitude formation, and attitudinal ambivalence. I also study facial expression synchronization.
 <br><br>
 <b>The effect of group membership and individuating information on automatic and deliberate judgment of individual group members.</b> The center of my work focuses on the relative effect of individuating information (e.g., person-specific actions and traits) and group based information (e.g., stereotypes, prejudice) on the automatic and deliberate evaluation of individual members of social groups.
