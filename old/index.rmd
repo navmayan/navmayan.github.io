@@ -10,7 +10,7 @@
 <style type="text/css"> body, td { font-size: 17px; } pre { font-size: 15px } </style>
 <p>
 I am a doctoral student in Social Psychology at Ben-Gurion University and Tel-Aviv University. 
-I work with Yoav Bar-Anan in the [Social Perception Lab](https://www.tau.ac.il/~baranan/). 
+I work with Yoav Bar-Anan at the [Social Perception Lab](https://www.tau.ac.il/~baranan/). 
 I received my B.A. in Psychology, Sociology, and Criminology from Bar-Ilan University, and my M.A. in Social Psychology from the Open University of Israel. My Master’s thesis explored the effects of conflict mindset on the visual mental representation of the ingroup and outgroup.
 </p>
 <br><br>
