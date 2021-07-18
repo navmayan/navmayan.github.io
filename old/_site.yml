@@ -16,8 +16,8 @@ navbar:
         - text: "Publications"
           href: pubs.html
         - text: "---------"
-        - text: "Research tools"
-          href: res.html
+        - text: "Project Implicit International Sites"
+          href: https://pi-international-blog.netlify.app/
   right:
     - icon: ai ai-osf
       href: https://osf.io/mjzvg/
@@ -25,6 +25,8 @@ navbar:
       href: https://www.researchgate.net/profile/Mayan_Navon
     - icon: fab fa-twitter-square
       href: https://twitter.com/mayan_navon
+    - icon: fab fa-linkedin-in
+      href: https://linkedin.com/in/mayan-navon
     - icon: fas fa-envelope
       href: mailto:mayanna@post.bgu.ac.il
 output:
