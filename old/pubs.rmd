@@ -9,22 +9,47 @@
 #
 ## __Publications__
 
-__Navon, M.__, Hoss, A., & Bar-Anan, Y. (2020). *The effect of group membership and individuating information on automatic and deliberate judgment of well-known people*. Manuscript under review,  [preprint](https://psyarxiv.com/pwuda/).
+### Published 
 
-__Navon, M.__ & Bar-Anan, Y. (2019). *The effect of group versus individuated information on automatic and deliberate evaluation*. Manuscript in preparation.
-
-__Navon, M.__, Liviatan, I., & Makovski, T. (2020). *The Self-Prioritization Effect revisited: A hierarchy in memory representation*. Manuscript in preparation.
+__Navon, M.__, Shechter, A., & Bar-Anan, Y. (2021). *The effect of group membership and individuating information on automatic and deliberate judgment of well-known people*. Journal of Personality and Social Psychology. https://doi.org/10.1037/pspa0000275.
 
 Roccas, S., Sagiv, L., & __Navon, M.__ (2017). Methodological issues in studying personal values. In S. Roccas & L. Sagiv (Eds.), *Examining the relationship between values and behavior: Taking a cross cultural perspective* (pp. 15-50). Springer, Cham.
 
+### In review
+
+Shechter, A.\*, __Navon, M.__\*, & Bar-Anan, Y. (2021). On the automatic activation of attitudes: A registered replication. *Equal
+contributors.
+
+### In preperation
+
+__Navon, M.__ & Bar-Anan, Y. (2021). When does group information influence the automatic and deliberate judgment of indi-
+vidual group members?.
+
+__Navon, M.__ & Bar-Anan, Y. (2021). The relative effect of group-based information and individuating information on automatic
+judgment.
+
+Charlesworth, TES.\*, __Navon, M.__\*, Rabinovich, Y., Lofaro, N., & kurdi, B. (2021). The Project Implicit International Dataset:
+Measuring implicit and explicit social group attitudes across 34 countries (2009–2019). *Equal contributors.
+
+__Navon, M.__ & Bar-Anan, Y. (2021). Compartmentalization of evaluative information allows the formation of bivalent judg-
+ments.
+
+Ravreby, I., __Navon, M.__, Farchi, M., Bar-Anan, Y., & Yeshurun, Y. (2021). Synchronization across various facial expressions as a
+function of political agreement.
 
 ## __Conference Papers__
 
-__Navon, M.__\* Ravreby, I.\*, Farchi, M., Bar-Anan, Y., & Yeshurun, Y. (2020, June). *Synchronization across various facial expressions as a function of political agreement*. Paper to be presented at the EASP pre-conference on social emotions, Krakow, Poland. \*Equal contributors.
+__Navon, M.__ & Bar-Anan, Y. (2021, September). *Discrepancies between automatic and deliberate evaluation of individual group-members*. The ESCON Transfer of Knowledge Conference, Salzburg, Austria.
 
-__Navon, M.__\* Ravreby, I.\*, Farchi, M., Bar-Anan, Y., & Yeshurun, Y. (2020, February). *Together through good times and bad times: Facial expression synchronization as a function of political agreement*. Paper presented at the 8th Conference on Cognition Research of the Israeli Society for Cognitive Psychology, Acre, Israel. \*Equal contributors.
+Ravreby, I., __Navon, M.__ ,Farchi, M., Bar-Anan, Y., & Yeshurun, Y. (2021, July). *Together through good times and bad times: Facial expression synchronization as a function of political agreement*. The Social Emotions pre-conference of the
+EASP General Meeting, Kraków, Poland.
 
-__Navon, M.__\* Ravreby, I.\*, Farchi, M., Bar-Anan, Y., & Yeshurun, Y. (2020, January). *Synchronization across various facial expressions as a function of political agreement*. Paper presented at the cogNeuro2020: Unfolding the Human Brain conference of the Sagol school of neuroscience, Tel-Aviv University, Israel. \*Equal contributors.
+__Navon, M.__ & Bar-Anan, Y. (2020, June). *The Affleck-Murphy effect: Group membership has a larger effect on automatic than on deliberate judgment of known people*. The 19th General Meeting of the European Association of Social Psychology,
+Kraków, Poland. (Conference canceled)
+
+Ravreby, I., __Navon, M.__, Farchi, M., Bar-Anan, Y., & Yeshurun, Y. (2020, February). *Together through good times and bad times: Facial expression synchronization as a function of political agreement*. Paper presented at the 8th Conference on Cognition Research of the Israeli Society for Cognitive Psychology, Acre, Israel. \*Equal contributors.
+
+Ravreby, I., __Navon, M.__, Farchi, M., Bar-Anan, Y., & Yeshurun, Y. (2020, January). *Synchronization across various facial expressions as a function of political agreement*. Paper presented at the cogNeuro2020: Unfolding the Human Brain conference of the Sagol school of neuroscience, Tel-Aviv University, Israel. \*Equal contributors.
 
 __Navon, M.__ & Bar-Anan, Y. (2019, September). *The effect of social group on the evaluation of individual members*. Paper presented at the 21st ESCON Transfer of Knowledge Conference, Bordeaux, France. 
 
