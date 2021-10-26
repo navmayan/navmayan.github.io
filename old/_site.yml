@@ -13,8 +13,8 @@ navbar:
         - text: "Mayan Navon"
         - text: "CV"
           href: files/Mayan Navon_CV.pdf
-        - text: "Publications"
-          href: pubs.html
+        # - text: "Publications"
+        #   href: pubs.html
         - text: "---------"
         - text: "Project Implicit International Sites"
           href: https://pi-international-blog.netlify.app/
