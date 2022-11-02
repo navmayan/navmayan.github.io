@@ -13,8 +13,8 @@
 
 <title>About This Website</title>
 
-<script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -59,6 +59,7 @@ if (window.hljs) {
 
 
 
+
 <link rel="stylesheet" href="styles.css" type="text/css" />
 
 
@@ -83,6 +84,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -140,11 +144,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -235,7 +243,7 @@ $(document).ready(function () {
 <div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -246,14 +254,14 @@ $(document).ready(function () {
       <ul class="nav navbar-nav">
         <li>
   <a href="index.html">
-    <span class="fas fa-home"></span>
+    <span class="fa fa-home"></span>
      
     Home
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fas fa-info"></span>
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-info"></span>
      
     About
      
@@ -263,9 +271,6 @@ $(document).ready(function () {
     <li class="dropdown-header">Mayan Navon</li>
     <li>
       <a href="files/Mayan Navon_CV.pdf">CV</a>
-    </li>
-    <li>
-      <a href="pubs.html">Publications</a>
     </li>
     <li class="divider"></li>
     <li>
@@ -322,9 +327,9 @@ $(document).ready(function () {
 <p>More about this website.</p>
 <p>Session information:</p>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>## R version 4.0.3 (2020-10-10)
+<pre><code>## R version 4.1.3 (2022-03-10)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
-## Running under: Windows 10 x64 (build 19042)
+## Running under: Windows 10 x64 (build 19044)
 ## 
 ## Matrix products: default
 ## 
@@ -337,34 +342,31 @@ $(document).ready(function () {
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.6          mvtnorm_1.1-2       lattice_0.20-41    
-##  [4] zoo_1.8-9           digest_0.6.27       assertthat_0.2.1   
-##  [7] utf8_1.2.1          R6_2.5.0            cellranger_1.1.0   
-## [10] plyr_1.8.6          evaluate_0.14       coda_0.19-4        
-## [13] ggplot2_3.3.3       pillar_1.6.1        rlang_0.4.11       
-## [16] curl_4.3.1          multcomp_1.4-17     readxl_1.3.1       
-## [19] minqa_1.2.4         data.table_1.14.0   jquerylib_0.1.4    
-## [22] car_3.0-10          nloptr_1.2.2.2      Matrix_1.2-18      
-## [25] rmarkdown_2.8       splines_4.0.3       lme4_1.1-27        
-## [28] stringr_1.4.0       foreign_0.8-80      afex_0.28-1        
-## [31] munsell_0.5.0       xfun_0.23           compiler_4.0.3     
-## [34] numDeriv_2016.8-1.1 pkgconfig_2.0.3     lmerTest_3.1-3     
-## [37] jmvcore_1.2.23      jmv_1.2.23          htmltools_0.5.1.1  
-## [40] tidyselect_1.1.1    tibble_3.1.2        rio_0.5.26         
-## [43] codetools_0.2-16    fansi_0.5.0         crayon_1.4.1       
-## [46] dplyr_1.0.6         MASS_7.3-53         grid_4.0.3         
-## [49] nlme_3.1-149        jsonlite_1.7.2      xtable_1.8-4       
-## [52] gtable_0.3.0        lifecycle_1.0.0     DBI_1.1.1          
-## [55] magrittr_2.0.1      scales_1.1.1        zip_2.2.0          
-## [58] estimability_1.3    stringi_1.6.2       carData_3.0-4      
-## [61] reshape2_1.4.4      bslib_0.2.5.1       ellipsis_0.3.2     
-## [64] generics_0.1.0      vctrs_0.3.8         boot_1.3-25        
-## [67] sandwich_3.0-1      openxlsx_4.2.3      TH.data_1.0-10     
-## [70] tools_4.0.3         forcats_0.5.1       glue_1.4.2         
-## [73] purrr_0.3.4         hms_1.1.0           emmeans_1.6.1      
-## [76] yaml_2.2.1          abind_1.4-5         parallel_4.0.3     
-## [79] survival_3.2-7      colorspace_2.0-1    knitr_1.33         
-## [82] haven_2.4.1         sass_0.4.0</code></pre>
+##  [1] Rcpp_1.0.8.3        mvtnorm_1.1-3       lattice_0.20-45    
+##  [4] zoo_1.8-9           assertthat_0.2.1    digest_0.6.29      
+##  [7] utf8_1.2.2          R6_2.5.1            plyr_1.8.6         
+## [10] coda_0.19-4         evaluate_0.16       ggplot2_3.3.6      
+## [13] pillar_1.8.1        rlang_1.0.6         multcomp_1.4-18    
+## [16] rstudioapi_0.13     minqa_1.2.4         jquerylib_0.1.4    
+## [19] car_3.0-12          nloptr_2.0.0        Matrix_1.4-0       
+## [22] rmarkdown_2.16      splines_4.1.3       lme4_1.1-28        
+## [25] stringr_1.4.1       afex_1.0-1          munsell_0.5.0      
+## [28] compiler_4.1.3      numDeriv_2016.8-1.1 xfun_0.33          
+## [31] pkgconfig_2.0.3     lmerTest_3.1-3      jmvcore_2.2        
+## [34] jmv_2.0             htmltools_0.5.3     tidyselect_1.1.2   
+## [37] tibble_3.1.6        codetools_0.2-18    fansi_0.5.0        
+## [40] dplyr_1.0.8         MASS_7.3-55         grid_4.1.3         
+## [43] nlme_3.1-155        jsonlite_1.8.1      xtable_1.8-4       
+## [46] gtable_0.3.1        lifecycle_1.0.2     DBI_1.1.2          
+## [49] magrittr_2.0.1      scales_1.2.1        estimability_1.3   
+## [52] cli_3.2.0           stringi_1.7.8       carData_3.0-5      
+## [55] reshape2_1.4.4      bslib_0.3.1         ellipsis_0.3.2     
+## [58] generics_0.1.3      vctrs_0.3.8         boot_1.3-28        
+## [61] sandwich_3.0-1      TH.data_1.1-0       tools_4.1.3        
+## [64] glue_1.6.0          purrr_0.3.4         emmeans_1.7.2      
+## [67] abind_1.4-5         parallel_4.1.3      fastmap_1.1.0      
+## [70] survival_3.2-13     yaml_2.3.5          colorspace_2.0-3   
+## [73] knitr_1.40          sass_0.4.0</code></pre>
 
 
 

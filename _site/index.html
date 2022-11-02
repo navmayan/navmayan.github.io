@@ -13,8 +13,8 @@
 
 <title>Mayan Navon | Ben-Gurion University</title>
 
-<script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -59,6 +59,7 @@ if (window.hljs) {
 
 
 
+
 <link rel="stylesheet" href="styles.css" type="text/css" />
 
 
@@ -83,6 +84,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -140,11 +144,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -235,7 +243,7 @@ $(document).ready(function () {
 <div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -246,17 +254,17 @@ $(document).ready(function () {
       <ul class="nav navbar-nav">
         <li>
   <a href="index.html">
-    <span class="fas fa-home"></span>
-
+    <span class="fa fa-home"></span>
+     
     Home
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fas fa-info"></span>
-
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-info"></span>
+     
     About
-
+     
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -275,31 +283,31 @@ $(document).ready(function () {
         <li>
   <a href="https://osf.io/mjzvg/">
     <span class="ai ai ai ai-osf"></span>
-
+     
   </a>
 </li>
 <li>
   <a href="https://www.researchgate.net/profile/Mayan_Navon">
     <span class="ai ai ai ai-researchgate"></span>
-
+     
   </a>
 </li>
 <li>
   <a href="https://twitter.com/mayan_navon">
     <span class="fab fa-twitter-square"></span>
-
+     
   </a>
 </li>
 <li>
   <a href="https://linkedin.com/in/mayan-navon">
     <span class="fab fa-linkedin-in"></span>
-
+     
   </a>
 </li>
 <li>
   <a href="mailto:mayanna@post.bgu.ac.il">
     <span class="fas fa-envelope"></span>
-
+     
   </a>
 </li>
       </ul>
@@ -318,11 +326,18 @@ $(document).ready(function () {
 <title>
 Mayan Navon | Ben-Gurion University
 </title>
-<p><link rel="stylesheet" href="styles.css" type="text/css"> <link rel="stylesheet" href="site_libs/academicons-1.8.6/css/academicons.css"/></p>
+<p><link rel="stylesheet" href="styles.css" type="text/css">
+<link rel="stylesheet" href="site_libs/academicons-1.8.6/css/academicons.css"/></p>
 <p><img src="images/me_crop.jpg" style="width:13%; border:3px solid; margin-right: 20px" align="left"></p>
 <style type="text/css"> body, td { font-size: 17px; } pre { font-size: 15px } </style>
 <p>
-I am a doctoral student in Social Psychology at Ben-Gurion University and Tel-Aviv University. I work with Yoav Bar-Anan at the <a href="https://www.tau.ac.il/~baranan/">Social Perception Lab</a>. I received my B.A. in Psychology, Sociology, and Criminology from Bar-Ilan University, and my M.A. in Social Psychology from the Open University of Israel. My Master’s thesis explored the effects of conflict mindset on the visual mental representation of the ingroup and outgroup.
+I am a Postdoctoral fellow at Ben-Gurion University and The Open
+University of Israel. I work with Niv Reggev at the <a
+href="https://scmbbgu.wixsite.com/scmblab">SCMB lab</a>. &amp; with Tal
+Moran. I received my B.A. in Psychology, Sociology, and Criminology from
+Bar-Ilan University, my M.A. in Social Psychology from the Open
+University of Israel, and my PhD in Psychology from Ben-Gurion
+University.
 </p>
 <p><br><br></p>
 <h3>
@@ -333,7 +348,29 @@ I am a doctoral student in Social Psychology at Ben-Gurion University and Tel-Av
 </p>
 <p>
 </p>
-<p><br><br><br><br><br> I study social cognition, mainly intergroup bias and intergroup relations, attitude formation, and attitudinal ambivalence. <br><br> <b>The effect of group membership and individuating information on automatic and deliberate judgment of individual group members.</b> The center of my work focuses on the relative effect of individuating information (e.g., person-specific actions and traits) and group based information (e.g., stereotypes, prejudice) on the automatic and deliberate evaluation of individual members of social groups. <br><br> <b>Cross-cultural differences in automatic and deliberate attitudes and stereotypes.</b> In this project I examine the extent to which countries around the world share their levels of bias in automatic and deliberate attitudes and stereotypes, the antecedents and consequences of cross-cultural differences and similarities, and variation of bias across time. <br><br> <b>Bivalent memory and its moderators.</b> In this project I examine memory processes that link the same object to two opposite values. In particular, I investigate the factors that moderate information integration, and keep the two opposite values seperate in memory. <br><br> <b>Synchronization across various facial expressions as a function of the interaction context.</b> Here I examine whether facial expressions synchronization and mimicry vary as a function of the interpersonal interaction context, and the facial expression in question (e.g., happiness, anger). <br><br> <b>Free-recall of group-members’ faces.</b> In this project, I examine whether stereotypes or certain schemas regarding social groups affect the way faces of group members are retrieved from memory. More specifically, I explore whether the recollection of learned faces is biased in the direction of certain stereotypes. <br><br></p>
+<p><br><br><br><br><br> I study social cognition, mainly intergroup bias
+and intergroup relations, attitude formation, and attitudinal
+ambivalence. <br><br> <b>The effect of group membership and
+individuating information on automatic and deliberate judgment of
+individual group members.</b> The center of my work focuses on the
+relative effect of individuating information (e.g., person-specific
+actions and traits) and group based information (e.g., stereotypes,
+prejudice) on the automatic and deliberate evaluation of individual
+members of social groups. <br><br> <b>Cross-cultural differences in
+automatic and deliberate attitudes and stereotypes.</b> In this project
+I examine the extent to which countries around the world share their
+levels of bias in automatic and deliberate attitudes and stereotypes,
+the antecedents and consequences of cross-cultural differences and
+similarities, and variation of bias across time. <br><br> <b>Free-recall
+of group-members’ faces.</b> In this project, I examine whether
+stereotypes or certain schemas regarding social groups affect the way
+faces of group members are retrieved from memory. More specifically, I
+explore whether the recollection of learned faces is biased in the
+direction of certain stereotypes. <br><br> <b>Bivalent memory and its
+moderators.</b> In this project I examine memory processes that link the
+same object to two opposite values. In particular, I investigate the
+factors that moderate information integration, and keep the two opposite
+values seperate in memory. <br><br></p>
 
 
 
