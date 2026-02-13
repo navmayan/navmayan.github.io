@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belgium → Israel Relocation Dashboard</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        :root {
+            --color-primary: #0284c7;
+            --color-primary-hover: #0369a1;
+            --color-success: #10b981;
+            --color-danger: #ef4444;
+            --color-bg: #f8fafc;
+            --color-surface: #ffffff;
+            --color-border: #e2e8f0;
+            --color-text: #0f172a;
+            --color-text-secondary: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .progress-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .progress-number {
+            font-size: 1.5rem;
+        }
+
+        .progress-label {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: var(--color-surface);
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .tab:hover {
+            border-color: var(--color-primary);
+        }
+
+        .tab.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .card {
+            background: var(--color-surface);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .btn-danger {
+            background: transparent;
+            color: var(--color-danger);
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .task-list {
+            min-height: 400px;
+        }
+
+        .task-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            transition: background 0.2s;
+        }
+
+        .task-item:hover {
+            background: #f8fafc;
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--color-border);
+            border-radius: 6px;
+            cursor: pointer;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            margin-top: 2px;
+        }
+
+        .checkbox.checked {
+            background: var(--color-success);
+            border-color: var(--color-success);
+        }
+
+        .checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+        }
+
+        .task-content {
+            flex-grow: 1;
+        }
+
+        .task-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            cursor: pointer;
+        }
+
+        .task-title.completed {
+            text-decoration: line-through;
+            color: var(--color-text-secondary);
+        }
+
+        .task-desc {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .task-deadline {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: #fee2e2;
+            color: #991b1b;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .task-actions {
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .task-item:hover .task-actions {
+            opacity: 1;
+        }
+
+        .empty-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            color: var(--color-text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: 2px solid var(--color-border);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .tabs {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+
+            .tab {
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="container">
+        <header class="header">
+            <h1>🇧🇪 ✈️ 🇮🇱 Belgium → Israel Relocation Dashboard</h1>
+            <div class="header-info">
+                <div>
+                    <div style="opacity: 0.9; margin-bottom: 0.25rem;">Target Timeline</div>
+                    <div style="font-size: 1.125rem; font-weight: 600;">July - September 2026</div>
+                </div>
+                <div class="progress-circle">
+                    <div class="progress-number">{{ overallProgress }}%</div>
+                    <div class="progress-label">Complete</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <div 
+                v-for="(category, index) in categories" 
+                :key="index"
+                @click="activeTab = index"
+                :class="['tab', { active: activeTab === index }]"
+            >
+                {{ category.name }} ({{ getCategoryProgress(category) }}%)
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">{{ categories[activeTab].name }}</h2>
+                <button @click="addTask" class="btn btn-primary">+ Add Task</button>
+            </div>
+
+            <div class="task-list">
+                <div v-if="categories[activeTab].tasks.length === 0" class="empty-state">
+                    <div class="empty-state-icon">📋</div>
+                    <div>No tasks in this category yet.</div>
+                    <div style="margin-top: 0.5rem; font-size: 0.875rem;">Click "Add Task" to create one.</div>
+                </div>
+
+                <div 
+                    v-for="(task, index) in categories[activeTab].tasks" 
+                    :key="index"
+                    class="task-item"
+                >
+                    <div 
+                        @click="toggleTask(task)"
+                        :class="['checkbox', { checked: task.done }]"
+                    ></div>
+
+                    <div class="task-content">
+                        <div v-if="!task.editing" @dblclick="editTask(task)" :class="['task-title', { completed: task.done }]">
+                            {{ task.title }}
+                        </div>
+                        <input 
+                            v-else 
+                            v-model="task.title" 
+                            @blur="stopEditing(task)" 
+                            @keyup.enter="stopEditing(task)"
+                            type="text"
+                            ref="editInput"
+                        >
+                        <div class="task-desc">{{ task.desc }}</div>
+                        <div v-if="task.deadline" class="task-deadline">📅 {{ task.deadline }}</div>
+                    </div>
+
+                    <div class="task-actions">
+                        <button @click="deleteTask(index)" class="btn btn-danger">🗑️</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            💾 Data is automatically saved to your browser's local storage<br>
+            You can close and reopen this page anytime - your progress will be preserved
+        </div>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+
+        const defaultCategories = [
+            {
+                name: "🇧🇪 Leaving Belgium",
+                tasks: [
+                    { 
+                        title: "Send rental termination notice", 
+                        desc: "Send registered letter (recommandé) to landlord. Typically requires 3 months notice.", 
+                        deadline: "April-May 2026", 
+                        done: false 
+                    },
+                    { 
+                        title: "Deregister from Commune (Model 8)", 
+                        desc: "Visit town hall to officially deregister. This stops tax liability. Get Model 8 form.", 
+                        deadline: "1-2 weeks before departure", 
+                        done: false 
+                    },
+                    { 
+                        title: "Notify school/daycare", 
+                        desc: "Inform them in writing of the final day.", 
+                        deadline: "As soon as possible", 
+                        done: false 
+                    },
+                    { 
+                        title: "File special tax return (exit tax)", 
+                        desc: "Contact tax office for exit declaration covering Jan 1 to departure date.", 
+                        deadline: "Within 3 months of leaving", 
+                        done: false 
+                    },
+                    { 
+                        title: "Cancel utilities & services", 
+                        desc: "Water, electricity, internet, phone. Schedule final meter readings.", 
+                        deadline: "1 month before", 
+                        done: false 
+                    },
+                    { 
+                        title: "Set up mail forwarding", 
+                        desc: "Activate bpost mail forwarding service for 6-12 months.", 
+                        deadline: "2 weeks before", 
+                        done: false 
+                    },
+                    { 
+                        title: "Close/pause Mutualité", 
+                        desc: "Inform health insurance and request E104 form if needed.", 
+                        deadline: "Last month", 
+                        done: false 
+                    },
+                    { 
+                        title: "Keep bank account open temporarily", 
+                        desc: "Keep for 3-6 months to receive deposit refunds and pay final bills.", 
+                        deadline: "Don't close immediately", 
+                        done: false 
+                    }
+                ]
+            },
+            {
+                name: "📦 Logistics & Shipping",
+                tasks: [
+                    { 
+                        title: "Get international shipping quotes", 
+                        desc: "Contact 3-4 companies: SkyFast, Excess Baggage, local movers. Compare prices.", 
+                        deadline: "March-April 2026", 
+                        done: false 
+                    },
+                    { 
+                        title: "Declutter and sell items", 
+                        desc: "Sell furniture/items not needed in Israel. Use 2dehands.be, Facebook Marketplace.", 
+                        deadline: "Ongoing", 
+                        done: false 
+                    },
+                    { 
+                        title: "Create inventory list for customs", 
+                        desc: "Detailed list of all items being shipped for Israeli customs (Meches).", 
+                        deadline: "Before shipping", 
+                        done: false 
+                    },
+                    { 
+                        title: "Book flights to Tel Aviv", 
+                        desc: "One-way tickets. Consider luggage allowance.", 
+                        deadline: "April-May 2026", 
+                        done: false 
+                    },
+                    { 
+                        title: "Arrange temporary accommodation", 
+                        desc: "First 1-2 weeks in Israel while searching for permanent housing.", 
+                        deadline: "May-June 2026", 
+                        done: false 
+                    }
+                ]
+            },
+            {
+                name: "🇮🇱 Arrival in Israel",
+                tasks: [
+                    { 
+                        title: "Enter with Israeli passport", 
+                        desc: "Declare intention to return as resident (Toshav Chozer).", 
+                        deadline: "Arrival day", 
+                        done: false 
+                    },
+                    { 
+                        title: "Register with Bituach Leumi", 
+                        desc: "Fill out Form 628 (Residency Determination). Bring passport, proof of address.", 
+                        deadline: "Week 1", 
+                        done: false 
+                    },
+                    { 
+                        title: "Pay health insurance redemption fee", 
+                        desc: "Pay ~15,060 NIS per adult to waive 6-month waiting period for healthcare.", 
+                        deadline: "Week 1-2", 
+                        done: false 
+                    },
+                    { 
+                        title: "Register with Kupat Cholim", 
+                        desc: "Choose health fund (Maccabi, Clalit, Meuhedet, Leumit) after Bituach Leumi registration.", 
+                        deadline: "Week 2", 
+                        done: false 
+                    },
+                    { 
+                        title: "Open Israeli bank account", 
+                        desc: "Must be done in person. Bring Teudat Zehut, proof of address (rental contract).", 
+                        deadline: "Week 1", 
+                        done: false 
+                    },
+                    { 
+                        title: "Visit Ministry of Aliyah (Misrad HaKlita)", 
+                        desc: "Get Toshav Chozer certificate for customs tax benefits on shipped goods.", 
+                        deadline: "First month", 
+                        done: false 
+                    },
+                    { 
+                        title: "Register with Ministry of Interior", 
+                        desc: "Update address in population registry. Bring rental contract.", 
+                        deadline: "First month", 
+                        done: false 
+                    },
+                    { 
+                        title: "Apply for Israeli driver's license", 
+                        desc: "Belgian license valid for 1 year. Then must convert or take test.", 
+                        deadline: "First 3 months", 
+                        done: false 
+                    }
+                ]
+            },
+            {
+                name: "🏠 Housing & Settlement",
+                tasks: [
+                    { 
+                        title: "Find permanent housing", 
+                        desc: "Use Yad2, Facebook groups. Consider proximity to work/schools.", 
+                        deadline: "First 2-3 weeks", 
+                        done: false 
+                    },
+                    { 
+                        title: "Sign rental contract", 
+                        desc: "Standard is 1-year contract. Negotiate terms, check deposit amount.", 
+                        deadline: "Week 3-4", 
+                        done: false 
+                    },
+                    { 
+                        title: "Set up utilities", 
+                        desc: "Electricity (Chashmal), water, internet, gas if applicable.", 
+                        deadline: "Move-in week", 
+                        done: false 
+                    },
+                    { 
+                        title: "Register children in schools", 
+                        desc: "Contact local municipality education department (Iriyah).", 
+                        deadline: "Before school year starts", 
+                        done: false 
+                    },
+                    { 
+                        title: "Buy Israeli SIM cards", 
+                        desc: "Choose mobile provider (Cellcom, Partner, Pelephone, Golan, 019).", 
+                        deadline: "Week 1", 
+                        done: false 
+                    }
+                ]
+            }
+        ];
+
+        createApp({
+            data() {
+                return {
+                    activeTab: 0,
+                    categories: []
+                };
+            },
+            computed: {
+                overallProgress() {
+                    let total = 0;
+                    let completed = 0;
+                    this.categories.forEach(cat => {
+                        total += cat.tasks.length;
+                        completed += cat.tasks.filter(t => t.done).length;
+                    });
+                    return total === 0 ? 0 : Math.round((completed / total) * 100);
+                }
+            },
+            mounted() {
+                this.loadData();
+            },
+            methods: {
+                loadData() {
+                    const saved = localStorage.getItem('belgiumIsraelRelocation');
+                    if (saved) {
+                        try {
+                            this.categories = JSON.parse(saved);
+                        } catch (e) {
+                            this.categories = defaultCategories;
+                        }
+                    } else {
+                        this.categories = defaultCategories;
+                    }
+                },
+                saveData() {
+                    localStorage.setItem('belgiumIsraelRelocation', JSON.stringify(this.categories));
+                },
+                getCategoryProgress(category) {
+                    if (category.tasks.length === 0) return 0;
+                    const completed = category.tasks.filter(t => t.done).length;
+                    return Math.round((completed / category.tasks.length) * 100);
+                },
+                toggleTask(task) {
+                    task.done = !task.done;
+                    this.saveData();
+                },
+                addTask() {
+                    const title = prompt("Enter task title:");
+                    if (title && title.trim()) {
+                        this.categories[this.activeTab].tasks.push({
+                            title: title.trim(),
+                            desc: "Custom task",
+                            deadline: "",
+                            done: false,
+                            editing: false
+                        });
+                        this.saveData();
+                    }
+                },
+                editTask(task) {
+                    task.editing = true;
+                    this.$nextTick(() => {
+                        const inputs = this.$refs.editInput;
+                        if (inputs) {
+                            const input = Array.isArray(inputs) ? inputs[inputs.length - 1] : inputs;
+                            if (input) input.focus();
+                        }
+                    });
+                },
+                stopEditing(task) {
+                    task.editing = false;
+                    this.saveData();
+                },
+                deleteTask(index) {
+                    if (confirm("Are you sure you want to delete this task?")) {
+                        this.categories[this.activeTab].tasks.splice(index, 1);
+                        this.saveData();
+                    }
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
